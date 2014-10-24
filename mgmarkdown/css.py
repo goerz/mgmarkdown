@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+try:
+    unicode("x")
+except NameError:
+    # In Python 3, unicode is not available, but strings work out of the box
+    unicode = lambda str, errors: str
+
 CSS = {
 'bootstrap':
 unicode("""

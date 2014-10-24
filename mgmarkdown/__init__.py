@@ -107,15 +107,15 @@ def convert(infile, outfile=None, snippet=False):
     html = mkd.convert(infile.read())
     title = ""
     mainheader = ""
-    if mkd.Meta.has_key("title"):
+    if "title" in mkd.Meta:
         title = mkd.Meta['title'][0]
         mainheader = "<h1>" + title + "</h1>"
     if snippet:
         outfile.write(html)
     else:
-        outfile.write(TEMPLATE.format(body=html, title=title,
-                      mainheader=mainheader, style=CSS['bootstrap']
-                     ))
+        html = TEMPLATE.format(body=html, title=title,
+                               mainheader=mainheader, style=CSS['bootstrap'])
+        outfile.write(html)
     infile.close()
     outfile.close()
 
