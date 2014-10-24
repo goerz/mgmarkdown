@@ -18,30 +18,52 @@ from mgmarkdown.css import CSS
 
 __version__ = "1.0.0"
 
-PELICAN_CONFIG = {}
+
+# mathjax_script_template
+MATHJAX = r"""
+if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {{
+    var mathjaxscript = document.createElement('script');
+    mathjaxscript.id = 'mathjaxscript_pelican_#%@#$@#';
+    mathjaxscript.type = 'text/javascript';
+    mathjaxscript.src = {source};
+    mathjaxscript[(window.opera ? "innerHTML" : "text")] =
+        "MathJax.Hub.Config({{" +
+        "    config: ['MMLorHTML.js']," +
+        "    TeX: {{ extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: {{ autoNumber: 'AMS' }} }}," +
+        "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
+        "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
+        "    displayAlign: '{align}'," +
+        "    displayIndent: '{indent}'," +
+        "    showMathMenu: {show_menu}," +
+        "    tex2jax: {{ " +
+        "        inlineMath: [ ['\\\\(','\\\\)'] ], " +
+        "        displayMath: [ ['$$','$$'] ]," +
+        "        processEscapes: {process_escapes}," +
+        "        preview: '{latex_preview}'," +
+        "    }}, " +
+        "    'HTML-CSS': {{ " +
+        "        styles: {{ '.MathJax_Display, .MathJax .mo, .MathJax .mi, .MathJax .mn': {{color: '{color} ! important'}} }}" +
+        "    }} " +
+        "}}); ";
+    (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
+}}
+"""
+mathjax_settings = {}
+mathjax_settings['align'] = 'center'  # controls alignment of of displayed equations (values can be: left, right, center)
+mathjax_settings['indent'] = '0em'  # if above is not set to 'center', then this setting acts as an indent
+mathjax_settings['show_menu'] = 'true'  # controls whether to attach mathjax contextual menu
+mathjax_settings['process_escapes'] = 'true'  # controls whether escapes are processed
+mathjax_settings['latex_preview'] = 'TeX'  # controls what user sees while waiting for LaTex to render
+mathjax_settings['color'] = 'black'  # controls color math is rendered in
+mathjax_settings['source'] = "'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'"
+
+config = {}
+config['mathjax_script'] = MATHJAX.format(**mathjax_settings)
+config['math_tag_class'] = 'math'
 
 MD_EXTENSIONS = ['codehilite(css_class=highlight)', 'extra', 'headerid', 'toc',
-                 'meta', PelicanMathJaxExtension(PELICAN_CONFIG) ]
+                 'meta', PelicanMathJaxExtension(config) ]
 
-MATHJAX = r"""
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js'],
-    jax: ["input/TeX", "output/HTML-CSS"],
-    displayAlign: '{align}',
-    displayIndent: '{indent}',
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-      processEscapes: true
-    },
-    "HTML-CSS": { availableFonts: ["TeX"] }
-  });
-</script>
-<script type="text/javascript"
-  src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-"""
 
 TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
@@ -51,7 +73,6 @@ TEMPLATE = """<!DOCTYPE html>
 {style}
 </style>
 <meta charset="utf-8">
-{mathjax}
 </head>
 <body>
 
@@ -93,8 +114,7 @@ def convert(infile, outfile=None, snippet=False):
         outfile.write(html)
     else:
         outfile.write(TEMPLATE.format(body=html, title=title,
-                      mainheader=mainheader, mathjax=MATHJAX,
-                      style=CSS['bootstrap']
+                      mainheader=mainheader, style=CSS['bootstrap']
                      ))
     infile.close()
     outfile.close()
