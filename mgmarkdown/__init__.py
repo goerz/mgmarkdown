@@ -29,7 +29,11 @@ if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {{
     mathjaxscript[(window.opera ? "innerHTML" : "text")] =
         "MathJax.Hub.Config({{" +
         "    config: ['MMLorHTML.js']," +
-        "    TeX: {{ extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: {{ autoNumber: 'AMS' }} }}," +
+        "    TeX: {{" +
+        "          extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], " +
+        "          equationNumbers: {{ autoNumber: 'AMS' }}," +
+        "          Macros: {{{macros}}}," +
+        "    }}," +
         "    jax: ['input/TeX','input/MathML','output/HTML-CSS']," +
         "    extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']," +
         "    displayAlign: '{align}'," +
@@ -48,6 +52,20 @@ if (!document.getElementById('mathjaxscript_pelican_#%@#$@#')) {{
     (document.body || document.getElementsByTagName('head')[0]).appendChild(mathjaxscript);
 }}
 """
+MACROS = r"""
+trace: "\\operatorname{tr}",
+diag: "\\operatorname{diag}",
+abs: "\\operatorname{abs}",
+opt: "\\operatorname{opt}",
+dd:    "\\, \\textnormal{d}",
+Op:   ["{\\boldsymbol{\\mathsf{\\hat{#1}}}}", 1],
+op:   ["{\\boldsymbol{\\mathsf{\\hat{#1}}}}", 1],
+Ket:  ["{\\left\\vert#1\\right\\rangle}", 1],
+bra:  ["{\\left\\langle#1\\right\\vert}", 1],
+Bra:  ["{\\left\\langle#1\\right\\vert}", 1],
+ket:  ["{\\left\\vert#1\\right\\rangle}", 1],
+Norm: ["{\\lVert#1\\rVert}", 1],
+"""
 mathjax_settings = {}
 mathjax_settings['align'] = 'center'  # controls alignment of of displayed equations (values can be: left, right, center)
 mathjax_settings['indent'] = '0em'  # if above is not set to 'center', then this setting acts as an indent
@@ -56,6 +74,7 @@ mathjax_settings['process_escapes'] = 'true'  # controls whether escapes are pro
 mathjax_settings['latex_preview'] = 'TeX'  # controls what user sees while waiting for LaTex to render
 mathjax_settings['color'] = 'black'  # controls color math is rendered in
 mathjax_settings['source'] = "'http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'"
+mathjax_settings['macros'] = " ".join(MACROS.split("\n")).replace('\\', '\\\\').replace('"', '\\"')
 
 config = {}
 config['mathjax_script'] = MATHJAX.format(**mathjax_settings)
