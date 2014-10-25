@@ -16,7 +16,7 @@ from mgmarkdown.pelican_mathjax_markdown_extension \
     import PelicanMathJaxExtension
 from mgmarkdown.css import CSS
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 
 # mathjax_script_template
